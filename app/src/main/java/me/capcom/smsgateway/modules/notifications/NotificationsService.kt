@@ -15,8 +15,15 @@ class NotificationsService(private val context: Context) {
     companion object {
         const val NOTIFICATION_ID_SMS_RECEIVED_WEBHOOK = 1001
         const val NOTIFICATION_ID_PAYMENT_DETECTED = 2001
+        const val NOTIFICATION_ID_LOCAL_SERVICE = 3001
+        const val NOTIFICATION_ID_REALTIME_EVENTS = 3002
+        const val NOTIFICATION_ID_PING_SERVICE = 3003
+        const val NOTIFICATION_ID_SEND_WORKER = 3004
+        const val NOTIFICATION_ID_WEBHOOK_WORKER = 3005
+        const val NOTIFICATION_ID_SETTINGS_CHANGED = 3006
         const val CHANNEL_ID_WEBHOOKS = "webhooks"
         const val CHANNEL_ID_PAYMENTS = "payments"
+        const val CHANNEL_ID_SERVICES = "services"
     }
     
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -45,8 +52,18 @@ class NotificationsService(private val context: Context) {
                 description = "Payment detection notifications"
             }
             
+            // Services channel
+            val servicesChannel = NotificationChannel(
+                CHANNEL_ID_SERVICES,
+                "Services",
+                NotificationManager.IMPORTANCE_LOW
+            ).apply {
+                description = "Background service notifications"
+            }
+            
             notificationManager.createNotificationChannel(webhooksChannel)
             notificationManager.createNotificationChannel(paymentsChannel)
+            notificationManager.createNotificationChannel(servicesChannel)
         }
     }
     
@@ -89,5 +106,21 @@ class NotificationsService(private val context: Context) {
             .build()
         
         notificationManager.notify(NOTIFICATION_ID_PAYMENT_DETECTED + transactionId.hashCode(), notification)
+    }
+    
+    fun makeNotification(context: Context, notificationId: Int, message: String): android.app.Notification {
+        val intent = Intent(context, MainActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(
+            context, 0, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        
+        return NotificationCompat.Builder(context, CHANNEL_ID_SERVICES)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle(context.getString(R.string.app_name))
+            .setContentText(message)
+            .setContentIntent(pendingIntent)
+            .setOngoing(true)
+            .build()
     }
 }

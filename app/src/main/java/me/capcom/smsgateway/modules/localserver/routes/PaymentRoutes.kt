@@ -18,15 +18,15 @@ import me.capcom.smsgateway.modules.payment.PaymentWalletType
 import me.capcom.smsgateway.modules.payment.data.PaymentSettingsRequest
 import me.capcom.smsgateway.modules.payment.data.PaymentStatsResponse
 import me.capcom.smsgateway.modules.payment.data.PaymentTransactionResponse
-import org.koin.ktor.ext.inject
+import org.koin.java.KoinJavaComponent.inject
 import java.math.BigDecimal
 
 fun Route.paymentRoutes() {
-    val paymentService by inject<PaymentService>()
-    val paymentSettings by inject<PaymentSettings>()
+    val paymentService by inject<PaymentService>(PaymentService::class.java)
+    val paymentSettings by inject<PaymentSettings>(PaymentSettings::class.java)
 
     route("/payments") {
-        authenticate("basic", "jwt") {
+        authenticate("auth-basic", "auth-jwt") {
             
             // Get payment transactions
             get {

@@ -75,7 +75,9 @@ class PaymentService(
         dao.insert(transaction)
         
         // Emit event
-        events.emit(PaymentDetectedEvent(paymentInfo))
+        scope.launch {
+            events.emit(PaymentDetectedEvent(paymentInfo))
+        }
         
         // Send notification if enabled
         if (settings.showPaymentNotifications) {
@@ -102,7 +104,9 @@ class PaymentService(
             dao.confirmTransaction(transactionId, System.currentTimeMillis())
             
             val updatedTransaction = dao.get(transactionId)!!
-            events.emit(PaymentConfirmedEvent(updatedTransaction))
+            scope.launch {
+                events.emit(PaymentConfirmedEvent(updatedTransaction))
+            }
             
             // Process confirmed payment
             if (!settings.paymentWebhookUrl.isNullOrBlank()) {
