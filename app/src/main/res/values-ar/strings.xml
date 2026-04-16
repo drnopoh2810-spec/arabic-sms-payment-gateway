@@ -151,9 +151,9 @@
     <!-- Payment Wallet Strings -->
     <string name="payment_wallet_parser">محلل رسائل المحافظ الإلكترونية</string>
     <string name="payment_detected">تم اكتشاف عملية دفع</string>
-    <string name="payment_amount">المبلغ: %1$s</string>
-    <string name="payment_sender">المرسل: %1$s</string>
-    <string name="payment_reference">المرجع: %1$s</string>
+    <string name="payment_amount_label">المبلغ</string>
+    <string name="payment_sender_label">المرسل</string>
+    <string name="payment_reference_label">المرجع</string>
     <string name="payment_wallet_type">نوع المحفظة: %1$s</string>
     <string name="payment_webhooks">Webhooks الدفع</string>
     <string name="payment_webhook_url">رابط webhook للدفع</string>

@@ -169,4 +169,25 @@
     <string name="incoming_type_sms" translatable="false">SMS</string>
     <string name="incoming_type_data_sms" translatable="false">Data SMS</string>
     <string name="incoming_type_mms" translatable="false">MMS</string>
+    
+    <!-- Payment Wallet Strings -->
+    <string name="payment_wallet_parser">Payment Wallet Parser</string>
+    <string name="payment_detected">Payment Detected</string>
+    <string name="payment_amount_label">Amount</string>
+    <string name="payment_sender_label">Sender</string>
+    <string name="payment_reference_label">Reference</string>
+    <string name="payment_wallet_type">Wallet Type: %1$s</string>
+    <string name="payment_webhooks">Payment Webhooks</string>
+    <string name="payment_webhook_url">Payment Webhook URL</string>
+    <string name="payment_auto_confirm">Auto Confirm Payments</string>
+    <string name="payment_notifications">Payment Notifications</string>
+    <string name="payment_processing">Processing Payment…</string>
+    <string name="payment_confirmed">Payment Confirmed</string>
+    <string name="payment_failed">Payment Failed</string>
+    <string name="wallet_instapay">InstaPay</string>
+    <string name="wallet_vodafone_cash">Vodafone Cash</string>
+    <string name="wallet_orange_cash">Orange Cash</string>
+    <string name="wallet_etisalat_cash">Etisalat Cash</string>
+    <string name="wallet_fawry">Fawry</string>
+    <string name="wallet_unknown">Unknown Wallet</string>
 </resources>

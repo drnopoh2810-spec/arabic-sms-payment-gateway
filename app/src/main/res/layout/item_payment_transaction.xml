@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/status_badge"
                 android:padding="4dp"
-                android:text="@string/payment_confirmed"
+                android:text="Confirmed"
                 android:textColor="@android:color/white"
                 android:textSize="12sp" />
 
@@ -61,7 +61,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/payment_sender"
+                android:text="Sender:"
                 android:textSize="14sp"
                 android:textColor="#666666" />
 
@@ -88,7 +88,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/payment_reference"
+                android:text="Reference:"
                 android:textSize="14sp"
                 android:textColor="#666666" />
 
@@ -119,7 +119,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@string/payment_confirmed"
+            android:text="Confirm Payment"
             android:visibility="gone"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
