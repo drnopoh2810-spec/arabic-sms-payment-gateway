@@ -1,0 +1,117 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v2.0.0)'
+        required: true
+        type: string
+      release-notes:
+        description: 'Release notes'
+        required: false
+        default: |
+          ## What's New
+          - Arabic localization support
+          - Electronic payment system
+          - Enhanced SMS gateway functionality
+          
+          ## Features
+          - 🌍 Full Arabic UI with RTL support
+          - 💳 Egyptian payment wallets integration
+          - 📱 Advanced SMS processing
+          - 🔗 Comprehensive API
+        type: string
+      prerelease:
+        description: 'Mark as pre-release'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: 17
+
+      - name: Cache Gradle and wrapper
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+
+      - name: Create dummy google-services.json
+        run: |
+          mkdir -p app
+          echo '{
+            "project_info": {
+              "project_number": "123456789",
+              "project_id": "dummy-project"
+            },
+            "client": [
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:123456789:android:abcdef",
+                  "android_client_info": {
+                    "package_name": "me.capcom.smsgateway.arabic"
+                  }
+                },
+                "oauth_client": [],
+                "api_key": [
+                  {
+                    "current_key": "dummy-api-key"
+                  }
+                ],
+                "services": {
+                  "appinvite_service": {
+                    "other_platform_oauth_client": []
+                  }
+                }
+              }
+            ],
+            "configuration_version": "1"
+          }' > ./app/google-services.json
+
+      - name: Set App Version
+        run: |
+          export VERSION_NAME='${{ inputs.version }}'
+          sed -i "s/versionName.*/versionName \"${VERSION_NAME#v}\"/" app/build.gradle
+          sed -i "s/versionCode.*/versionCode $(( ($(date +%s) - $(date -d "2022-06-15" +%s)) / 86400 ))/" app/build.gradle
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Build Release APK
+        run: ./gradlew assembleDebug
+
+      - name: Build Debug Insecure APK
+        run: ./gradlew assembleDebugInsecure
+
+      - name: Rename APK files
+        run: |
+          mkdir -p release-files
+          cp app/build/outputs/apk/debug/app-debug.apk "release-files/arabic-sms-gateway-${{ inputs.version }}-debug.apk"
+          cp app/build/outputs/apk/debugInsecure/app-debugInsecure.apk "release-files/arabic-sms-gateway-${{ inputs.version }}-insecure.apk"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ inputs.version }}
+          name: Arabic SMS Gateway ${{ inputs.version }}
+          body: ${{ inputs.release-notes }}
+          prerelease: ${{ inputs.prerelease }}
+          files: |
+            release-files/*.apk
+          generate_release_notes: true

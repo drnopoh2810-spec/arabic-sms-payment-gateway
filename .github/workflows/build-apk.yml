@@ -1,4 +1,4 @@
-name: Build APK
+name: Build APK (Reusable)
 
 on:
   workflow_call:
@@ -11,15 +11,15 @@ on:
         type: string
     secrets:
       google-services-json:
-        required: true
+        required: false
       signing-key-store-base64:
-        required: true
+        required: false
       signing-key-alias:
-        required: true
+        required: false
       signing-key-password:
-        required: true
+        required: false
       signing-store-password:
-        required: true
+        required: false
 
 jobs:
   build-apk:
@@ -45,7 +45,39 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
 
       - name: Setup Google Services
-        run: echo ${{ secrets.google-services-json }} | base64 --decode > ./app/google-services.json
+        run: |
+          if [ -n "${{ secrets.google-services-json }}" ]; then
+            echo ${{ secrets.google-services-json }} | base64 --decode > ./app/google-services.json
+          else
+            echo '{
+              "project_info": {
+                "project_number": "123456789",
+                "project_id": "dummy-project"
+              },
+              "client": [
+                {
+                  "client_info": {
+                    "mobilesdk_app_id": "1:123456789:android:abcdef",
+                    "android_client_info": {
+                      "package_name": "me.capcom.smsgateway.arabic"
+                    }
+                  },
+                  "oauth_client": [],
+                  "api_key": [
+                    {
+                      "current_key": "dummy-api-key"
+                    }
+                  ],
+                  "services": {
+                    "appinvite_service": {
+                      "other_platform_oauth_client": []
+                    }
+                  }
+                }
+              ],
+              "configuration_version": "1"
+            }' > ./app/google-services.json
+          fi
 
       - name: Set App Version
         run: |
@@ -53,20 +85,21 @@ jobs:
           sed -i "s/versionName.*/versionName \"${VERSION_NAME#v}\"/" app/build.gradle
           sed -i "s/versionCode.*/versionCode $(( ($(date +%s) - $(date -d "2022-06-15" +%s)) / 86400 ))/" app/build.gradle
 
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: Test
         run: ./gradlew test
 
-      #1
-      - name: Decode Keystore
+      - name: Decode Keystore (if available)
+        if: ${{ secrets.signing-key-store-base64 != '' }}
         env:
           ENCODED_STRING: ${{ secrets.signing-key-store-base64 }}
           SIGNING_KEY_STORE_PATH: app/keystore.jks
-
         run: |
           echo $ENCODED_STRING > keystore-b64.txt
           base64 -d keystore-b64.txt > $SIGNING_KEY_STORE_PATH
 
-      #2
       - name: Build ${{ inputs.build-type }} apk
         env:
           SIGNING_KEY_STORE_PATH: app/keystore.jks
@@ -76,7 +109,8 @@ jobs:
           TARGET: ${{ inputs.build-type }}
         run: ./gradlew assemble${TARGET^}
 
-      - name: Build ${{ inputs.build-type }} bundle
+      - name: Build ${{ inputs.build-type }} bundle (if signed)
+        if: ${{ secrets.signing-key-store-base64 != '' }}
         env:
           SIGNING_KEY_STORE_PATH: app/keystore.jks
           SIGNING_KEY_ALIAS: ${{ secrets.signing-key-alias }}
