@@ -3,11 +3,13 @@ package me.capcom.smsgateway.modules.incoming
 import me.capcom.smsgateway.modules.incoming.db.IncomingMessage
 import me.capcom.smsgateway.modules.incoming.db.IncomingMessageType
 import me.capcom.smsgateway.modules.incoming.repositories.IncomingMessagesRepository
+import me.capcom.smsgateway.modules.payment.PaymentService
 import me.capcom.smsgateway.modules.receiver.data.InboxMessage
 import java.util.UUID
 
 class IncomingMessagesService(
     private val repository: IncomingMessagesRepository,
+    private val paymentService: PaymentService? = null
 ) {
     fun save(message: InboxMessage, sender: String, recipient: String?, simNumber: Int?) {
         val type = when (message) {
@@ -17,9 +19,11 @@ class IncomingMessagesService(
             is InboxMessage.MMS -> IncomingMessageType.MMS_DOWNLOADED
         }
 
+        val messageId = buildId(message)
+        
         repository.insert(
             IncomingMessage(
-                id = buildId(message),
+                id = messageId,
                 type = type,
                 sender = sender,
                 recipient = recipient,
@@ -29,6 +33,15 @@ class IncomingMessagesService(
                 createdAt = message.date.time,
             )
         )
+        
+        // Process payment messages if it's a text message
+        if (message is InboxMessage.Text && paymentService != null) {
+            paymentService.processIncomingMessage(
+                messageText = message.text,
+                sender = sender,
+                messageId = messageId
+            )
+        }
     }
 
     private fun buildId(message: InboxMessage): String {

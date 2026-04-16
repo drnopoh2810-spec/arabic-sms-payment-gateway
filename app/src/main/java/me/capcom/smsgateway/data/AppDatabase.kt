@@ -6,10 +6,12 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import me.capcom.smsgateway.data.dao.MessagesDao
+import me.capcom.smsgateway.data.dao.PaymentTransactionsDao
 import me.capcom.smsgateway.data.dao.TokensDao
 import me.capcom.smsgateway.data.entities.Message
 import me.capcom.smsgateway.data.entities.MessageRecipient
 import me.capcom.smsgateway.data.entities.MessageState
+import me.capcom.smsgateway.data.entities.PaymentTransaction
 import me.capcom.smsgateway.data.entities.RecipientState
 import me.capcom.smsgateway.data.entities.Token
 import me.capcom.smsgateway.modules.incoming.db.IncomingMessage
@@ -32,8 +34,9 @@ import me.capcom.smsgateway.modules.webhooks.db.WebhookQueueEntity
         LogEntry::class,
         Token::class,
         IncomingMessage::class,
+        PaymentTransaction::class,
     ],
-    version = 20,
+    version = 21,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
         AutoMigration(from = 2, to = 3),
@@ -54,6 +57,7 @@ import me.capcom.smsgateway.modules.webhooks.db.WebhookQueueEntity
         AutoMigration(from = 17, to = 18),
         AutoMigration(from = 18, to = 19),
         AutoMigration(from = 19, to = 20),
+        AutoMigration(from = 20, to = 21),
     ]
 )
 @TypeConverters(Converters::class)
@@ -64,6 +68,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun logDao(): LogEntriesDao
     abstract fun incomingMessagesDao(): IncomingMessagesDao
     abstract fun tokensDao(): TokensDao
+    abstract fun paymentTransactionsDao(): PaymentTransactionsDao
 
     companion object {
         fun getDatabase(context: android.content.Context): AppDatabase {

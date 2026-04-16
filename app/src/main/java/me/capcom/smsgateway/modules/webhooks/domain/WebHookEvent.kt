@@ -26,4 +26,10 @@ enum class WebHookEvent(val value: String) {
 
     @SerializedName("mms:downloaded")
     MmsDownloaded("mms:downloaded"),
+
+    @SerializedName("payment:detected")
+    PaymentDetected("payment:detected"),
+
+    @SerializedName("payment:confirmed")
+    PaymentConfirmed("payment:confirmed"),
 }
