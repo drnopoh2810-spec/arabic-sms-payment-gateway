@@ -203,9 +203,9 @@ class WebService : Service() {
                     
                     // Payment routes
                     paymentRoutes()
-                    }
                 }
             }
+        }
         }
     }
 
