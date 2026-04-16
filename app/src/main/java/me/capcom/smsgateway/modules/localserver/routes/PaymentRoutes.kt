@@ -30,7 +30,7 @@ fun Route.paymentRoutes() {
             
             // Get payment transactions
             get {
-                requireScope(AuthScopes.MESSAGES_READ)
+                requireScope(AuthScopes.MessagesRead)
                 
                 val limit = call.request.queryParameters["limit"]?.toIntOrNull() ?: 50
                 val walletType = call.request.queryParameters["wallet_type"]?.let { 
@@ -72,7 +72,7 @@ fun Route.paymentRoutes() {
             
             // Get specific transaction
             get("/{id}") {
-                requireScope(AuthScopes.MESSAGES_READ)
+                requireScope(AuthScopes.MessagesRead)
                 
                 val id = call.parameters["id"] ?: return@get call.respond(
                     HttpStatusCode.BadRequest, 
@@ -108,7 +108,7 @@ fun Route.paymentRoutes() {
             
             // Confirm payment
             post("/{id}/confirm") {
-                requireScope(AuthScopes.MESSAGES_WRITE)
+                requireScope(AuthScopes.MessagesWrite)
                 
                 val id = call.parameters["id"] ?: return@post call.respond(
                     HttpStatusCode.BadRequest,
@@ -129,7 +129,7 @@ fun Route.paymentRoutes() {
             
             // Get payment statistics
             get("/stats") {
-                requireScope(AuthScopes.MESSAGES_READ)
+                requireScope(AuthScopes.MessagesRead)
                 
                 val hours = call.request.queryParameters["hours"]?.toIntOrNull() ?: 24
                 val fromTime = System.currentTimeMillis() - (hours * 3600 * 1000L)
@@ -148,7 +148,7 @@ fun Route.paymentRoutes() {
             
             // Get pending transactions
             get("/pending") {
-                requireScope(AuthScopes.MESSAGES_READ)
+                requireScope(AuthScopes.MessagesRead)
                 
                 val pendingTransactions = paymentService.getPendingTransactions()
                 
@@ -182,7 +182,7 @@ fun Route.paymentRoutes() {
                 
                 // Get payment settings
                 get {
-                    requireScope(AuthScopes.SETTINGS_READ)
+                    requireScope(AuthScopes.SettingsRead)
                     
                     val response = mapOf(
                         "enabled" to paymentSettings.isEnabled,
@@ -203,7 +203,7 @@ fun Route.paymentRoutes() {
                 
                 // Update payment settings
                 patch {
-                    requireScope(AuthScopes.SETTINGS_WRITE)
+                    requireScope(AuthScopes.SettingsWrite)
                     
                     val request = call.receive<PaymentSettingsRequest>()
                     
