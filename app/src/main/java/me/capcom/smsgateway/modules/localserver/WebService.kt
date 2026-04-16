@@ -206,7 +206,7 @@ class WebService : Service() {
                 }
             }
         }
-        }
+    }
     }
 
     private val port = settings.port
