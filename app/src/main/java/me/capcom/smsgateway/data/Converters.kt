@@ -1,84 +1,45 @@
 package me.capcom.smsgateway.data
 
 import androidx.room.TypeConverter
-import me.capcom.smsgateway.data.entities.MessageType
-import me.capcom.smsgateway.domain.EntitySource
-import me.capcom.smsgateway.domain.ProcessingState
-import me.capcom.smsgateway.modules.incoming.db.IncomingMessageType
-import me.capcom.smsgateway.modules.logs.db.LogEntry
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonElement
 import me.capcom.smsgateway.modules.payment.PaymentWalletType
-import me.capcom.smsgateway.modules.webhooks.domain.WebHookEvent
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 class Converters {
+    private val gson = GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create()
+
     @TypeConverter
-    fun fromTimestamp(value: Long?): Date? {
-        return value?.let { Date(it) }
+    fun listToString(value: List<String>?): String? {
+        return value?.let { gson.toJson(it) }
     }
 
     @TypeConverter
-    fun dateToTimestamp(date: Date?): Long? {
-        return date?.time
+    fun listFromString(value: String?): List<String>? {
+        return value?.let { gson.fromJson(it, Array<String>::class.java).toList() }
     }
 
     @TypeConverter
-    fun fromProcessingState(value: ProcessingState): String {
-        return value.name
+    fun dateToString(value: Date?): String? {
+        return value?.let { DATE_FORMAT.format(it) }
     }
 
     @TypeConverter
-    fun toProcessingState(value: String): ProcessingState {
-        return ProcessingState.valueOf(value)
+    fun dateFromString(value: String?): Date? {
+        return value?.let { DATE_FORMAT.parse(it) }
     }
 
     @TypeConverter
-    fun fromEntitySource(value: EntitySource): String {
-        return value.name
+    fun jsonToString(value: JsonElement?): String? {
+        return value?.let { gson.toJson(it) }
     }
 
     @TypeConverter
-    fun toEntitySource(value: String): EntitySource {
-        return EntitySource.valueOf(value)
-    }
-
-    @TypeConverter
-    fun fromMessageType(value: MessageType): String {
-        return value.name
-    }
-
-    @TypeConverter
-    fun toMessageType(value: String): MessageType {
-        return MessageType.valueOf(value)
-    }
-
-    @TypeConverter
-    fun fromWebHookEvent(value: WebHookEvent): String {
-        return value.name
-    }
-
-    @TypeConverter
-    fun toWebHookEvent(value: String): WebHookEvent {
-        return WebHookEvent.valueOf(value)
-    }
-
-    @TypeConverter
-    fun fromLogPriority(value: LogEntry.Priority): String {
-        return value.name
-    }
-
-    @TypeConverter
-    fun toLogPriority(value: String): LogEntry.Priority {
-        return LogEntry.Priority.valueOf(value)
-    }
-
-    @TypeConverter
-    fun fromIncomingMessageType(value: IncomingMessageType): String {
-        return value.name
-    }
-
-    @TypeConverter
-    fun toIncomingMessageType(value: String): IncomingMessageType {
-        return IncomingMessageType.valueOf(value)
+    fun stringToJson(value: String?): JsonElement? {
+        return value?.let { gson.fromJson(it, JsonElement::class.java) }
     }
 
     @TypeConverter
@@ -89,5 +50,12 @@ class Converters {
     @TypeConverter
     fun toPaymentWalletType(value: String): PaymentWalletType {
         return PaymentWalletType.valueOf(value)
+    }
+
+    companion object {
+        private val DATE_FORMAT =
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US).apply {
+                timeZone = TimeZone.getTimeZone("GMT")
+            }
     }
 }

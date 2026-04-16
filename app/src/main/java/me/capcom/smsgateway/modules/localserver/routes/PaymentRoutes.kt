@@ -15,7 +15,6 @@ import me.capcom.smsgateway.modules.localserver.auth.AuthScopes
 import me.capcom.smsgateway.modules.payment.PaymentService
 import me.capcom.smsgateway.modules.payment.PaymentSettings
 import me.capcom.smsgateway.modules.payment.PaymentWalletType
-import me.capcom.smsgateway.modules.payment.data.PaymentConfirmRequest
 import me.capcom.smsgateway.modules.payment.data.PaymentSettingsRequest
 import me.capcom.smsgateway.modules.payment.data.PaymentStatsResponse
 import me.capcom.smsgateway.modules.payment.data.PaymentTransactionResponse

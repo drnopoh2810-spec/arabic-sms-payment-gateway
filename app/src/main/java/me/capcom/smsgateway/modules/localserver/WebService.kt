@@ -47,6 +47,7 @@ import me.capcom.smsgateway.modules.localserver.routes.DocsRoutes
 import me.capcom.smsgateway.modules.localserver.routes.LogsRoutes
 import me.capcom.smsgateway.modules.localserver.routes.MessagesRoutes
 import me.capcom.smsgateway.modules.localserver.routes.WebhooksRoutes
+import me.capcom.smsgateway.modules.localserver.routes.paymentRoutes
 import me.capcom.smsgateway.modules.notifications.NotificationsService
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
@@ -198,6 +199,10 @@ class WebService : Service() {
                     }
                     route("/auth") {
                         AuthRoutes(jwtService).register(this)
+                    }
+                    
+                    // Payment routes
+                    paymentRoutes()
                     }
                 }
             }

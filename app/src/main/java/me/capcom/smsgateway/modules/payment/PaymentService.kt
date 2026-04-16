@@ -11,8 +11,8 @@ import me.capcom.smsgateway.modules.events.EventBus
 import me.capcom.smsgateway.modules.payment.data.PaymentInfo
 import me.capcom.smsgateway.modules.payment.events.PaymentDetectedEvent
 import me.capcom.smsgateway.modules.payment.events.PaymentConfirmedEvent
-import me.capcom.smsgateway.modules.webhooks.WebhooksService
-import me.capcom.smsgateway.modules.webhooks.data.WebhookEvent
+import me.capcom.smsgateway.modules.webhooks.WebHooksService
+import me.capcom.smsgateway.modules.webhooks.domain.WebHookEvent
 import me.capcom.smsgateway.modules.notifications.NotificationsService
 import java.math.BigDecimal
 
@@ -21,7 +21,7 @@ class PaymentService(
     private val dao: PaymentTransactionsDao,
     private val parser: PaymentParser,
     private val events: EventBus,
-    private val webhooksService: WebhooksService,
+    private val webhooksService: WebHooksService,
     private val notificationsService: NotificationsService,
     private val settings: PaymentSettings
 ) {
@@ -135,16 +135,16 @@ class PaymentService(
                 "created_at" to transaction.createdAt
             )
             
-            val response = webhooksService.sendWebhook(
-                url = transaction.webhookUrl!!,
-                event = WebhookEvent.PAYMENT_CONFIRMED,
-                data = webhookData
+            val response = webhooksService.emit(
+                context = context,
+                event = WebHookEvent.PaymentConfirmed,
+                payload = webhookData
             )
             
             dao.markProcessed(
                 id = transaction.id,
                 processedAt = System.currentTimeMillis(),
-                response = response?.toString()
+                response = "webhook_sent"
             )
             
         } catch (e: Exception) {
@@ -169,10 +169,10 @@ class PaymentService(
                 "raw_message" to transaction.rawMessage
             )
             
-            webhooksService.sendWebhook(
-                url = settings.paymentWebhookUrl!!,
-                event = WebhookEvent.PAYMENT_DETECTED,
-                data = webhookData
+            webhooksService.emit(
+                context = context,
+                event = WebHookEvent.PaymentDetected,
+                payload = webhookData
             )
             
         } catch (e: Exception) {
