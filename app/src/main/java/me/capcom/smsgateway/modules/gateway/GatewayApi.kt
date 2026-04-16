@@ -42,6 +42,19 @@ class GatewayApi(
                 configure()
             }
         }
+        
+        // إعدادات المهلة الزمنية المحسنة
+        engine {
+            config {
+                connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                readTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
+                writeTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
+                
+                // إعدادات إضافية للاستقرار
+                retryOnConnectionFailure(true)
+            }
+        }
+        
         expectSuccess = true
     }
 

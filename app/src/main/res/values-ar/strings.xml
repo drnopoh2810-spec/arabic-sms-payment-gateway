@@ -159,6 +159,19 @@
     <string name="payment_webhook_url">رابط webhook للدفع</string>
     <string name="payment_auto_confirm">تأكيد الدفع تلقائياً</string>
     <string name="payment_notifications">إشعارات الدفع</string>
+    
+    <!-- Cloud Server Error Messages -->
+    <string name="cloud_server_connection_failed">فشل في الاتصال بالخادم السحابي</string>
+    <string name="cloud_server_no_internet">لا يوجد اتصال بالإنترنت</string>
+    <string name="cloud_server_timeout">انتهت مهلة الاتصال بالخادم السحابي</string>
+    <string name="cloud_server_ssl_error">مشكلة في شهادة الأمان</string>
+    <string name="cloud_server_auth_error">خطأ في المصادقة</string>
+    <string name="cloud_server_permission_denied">ليس لديك صلاحية للوصول</string>
+    <string name="cloud_server_not_found">المورد غير موجود</string>
+    <string name="cloud_server_server_error">خطأ في الخادم السحابي</string>
+    <string name="cloud_server_unknown_error">خطأ غير معروف في الاتصال</string>
+    <string name="cloud_server_test_connection">اختبار الاتصال بالخادم السحابي</string>
+    <string name="cloud_server_connection_success">تم الاتصال بالخادم السحابي بنجاح</string>
     <string name="payment_processing">جاري معالجة الدفع…</string>
     <string name="payment_confirmed">تم تأكيد الدفع</string>
     <string name="payment_failed">فشل الدفع</string>

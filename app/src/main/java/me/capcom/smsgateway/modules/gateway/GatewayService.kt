@@ -24,14 +24,20 @@ import me.capcom.smsgateway.services.PushService
 import java.util.Date
 
 class GatewayService(
+    private val context: Context,
     private val messagesService: MessagesService,
     private val settings: GatewaySettings,
     private val events: EventBus,
     private val logsService: LogsService,
 ) {
     private val eventsReceiver by lazy { EventsReceiver() }
+    private val networkErrorHandler by lazy { NetworkErrorHandler(context) }
 
     private var _api: GatewayApi? = null
+
+    companion object {
+        private const val MODULE_NAME = "GatewayService"
+    }
 
     private val api
         get() = _api ?: GatewayApi(
@@ -145,10 +151,24 @@ class GatewayService(
                 )
             )
         } catch (th: Throwable) {
+            val errorMessage = networkErrorHandler.handleNetworkError(th)
+            logsService.insert(
+                LogEntry.Priority.ERROR,
+                MODULE_NAME,
+                "فشل في تسجيل الجهاز: $errorMessage",
+                mapOf(
+                    "error_type" to th.javaClass.simpleName,
+                    "error_message" to th.message,
+                    "server_url" to settings.serverUrl,
+                    "network_available" to networkErrorHandler.isNetworkAvailable(),
+                    "registration_mode" to registerMode.javaClass.simpleName
+                )
+            )
+            
             events.emit(
                 DeviceRegisteredEvent.Failure(
                     api.hostname,
-                    th.localizedMessage ?: th.message ?: th.toString()
+                    errorMessage
                 )
             )
 
@@ -293,6 +313,51 @@ class GatewayService(
     //endregion
 
     //region Utility
+    suspend fun testConnection(): Boolean {
+        return try {
+            if (!networkErrorHandler.isNetworkAvailable()) {
+                logsService.insert(
+                    LogEntry.Priority.ERROR,
+                    MODULE_NAME,
+                    "لا يوجد اتصال بالإنترنت",
+                    mapOf(
+                        "network_type" to networkErrorHandler.getNetworkType(),
+                        "server_url" to settings.serverUrl
+                    )
+                )
+                return false
+            }
+            
+            val response = api.getDevice(settings.registrationInfo?.token)
+            logsService.insert(
+                LogEntry.Priority.INFO,
+                MODULE_NAME,
+                "تم الاتصال بالخادم السحابي بنجاح",
+                mapOf(
+                    "server_url" to settings.serverUrl,
+                    "external_ip" to response.externalIp,
+                    "network_type" to networkErrorHandler.getNetworkType()
+                )
+            )
+            true
+        } catch (e: Exception) {
+            val errorMessage = networkErrorHandler.handleNetworkError(e)
+            logsService.insert(
+                LogEntry.Priority.ERROR,
+                MODULE_NAME,
+                "فشل في الاتصال بالخادم السحابي: $errorMessage",
+                mapOf(
+                    "error_type" to e.javaClass.simpleName,
+                    "error_message" to e.message,
+                    "server_url" to settings.serverUrl,
+                    "network_type" to networkErrorHandler.getNetworkType(),
+                    "network_available" to networkErrorHandler.isNetworkAvailable()
+                )
+            )
+            false
+        }
+    }
+
     suspend fun getPublicIP(): String {
         return GatewayApi(
             settings.serverUrl,
