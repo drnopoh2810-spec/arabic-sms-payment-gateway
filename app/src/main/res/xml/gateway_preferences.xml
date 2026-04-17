@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- إعدادات الخادم -->
+    <PreferenceCategory android:title="@string/server_settings_category">
+
+        <!-- تفعيل/إلغاء تفعيل الخدمة -->
+        <SwitchPreferenceCompat
+            android:key="gateway_enabled"
+            android:title="@string/gateway_enabled_title"
+            android:summary="@string/gateway_enabled_summary"
+            android:defaultValue="true" />
+
+        <!-- وضع الخادم -->
+        <ListPreference
+            android:key="server_mode"
+            android:title="@string/server_mode_title"
+            android:summary="@string/server_mode_summary"
+            android:entries="@array/server_mode_entries"
+            android:entryValues="@array/server_mode_values"
+            android:defaultValue="LOCAL_ONLY"
+            android:dependency="gateway_enabled" />
+
+        <!-- عنوان الخادم السحابي -->
+        <EditTextPreference
+            android:key="cloud_server_url"
+            android:title="@string/cloud_server_url_title"
+            android:summary="@string/cloud_server_url_summary"
+            android:defaultValue="https://api.sms-gate.app/mobile/v1"
+            android:inputType="textUri"
+            android:dependency="gateway_enabled" />
+
+        <!-- الرمز المميز الخاص -->
+        <EditTextPreference
+            android:key="private_token"
+            android:title="@string/private_token_title"
+            android:summary="@string/private_token_summary"
+            android:inputType="textPassword"
+            android:dependency="gateway_enabled" />
+
+    </PreferenceCategory>
+
+    <!-- إعدادات الاتصال -->
+    <PreferenceCategory android:title="@string/connection_settings_category">
+
+        <!-- اختبار الاتصال -->
+        <Preference
+            android:key="test_connection"
+            android:title="@string/test_connection_title"
+            android:summary="@string/test_connection_summary"
+            android:icon="@drawable/ic_network_check"
+            android:dependency="gateway_enabled" />
+
+        <!-- حالة الاتصال -->
+        <Preference
+            android:key="connection_status"
+            android:title="@string/connection_status_title"
+            android:summary="@string/connection_status_summary"
+            android:icon="@drawable/ic_signal_wifi_4_bar"
+            android:selectable="false" />
+
+        <!-- إحصائيات الاتصال -->
+        <Preference
+            android:key="connection_stats"
+            android:title="@string/connection_stats_title"
+            android:summary="@string/connection_stats_summary"
+            android:icon="@drawable/ic_analytics"
+            android:selectable="false" />
+
+    </PreferenceCategory>
+
+    <!-- إعدادات الإشعارات -->
+    <PreferenceCategory android:title="@string/notification_settings_category">
+
+        <!-- قناة الإشعارات -->
+        <ListPreference
+            android:key="notification_channel"
+            android:title="@string/notification_channel_title"
+            android:summary="@string/notification_channel_summary"
+            android:entries="@array/notification_channel_entries"
+            android:entryValues="@array/notification_channel_values"
+            android:defaultValue="AUTO"
+            android:dependency="gateway_enabled" />
+
+        <!-- إشعارات الاتصال -->
+        <SwitchPreferenceCompat
+            android:key="connection_notifications"
+            android:title="@string/connection_notifications_title"
+            android:summary="@string/connection_notifications_summary"
+            android:defaultValue="true"
+            android:dependency="gateway_enabled" />
+
+    </PreferenceCategory>
+
+    <!-- إعدادات متقدمة -->
+    <PreferenceCategory android:title="@string/advanced_settings_category">
+
+        <!-- مهلة الاتصال -->
+        <SeekBarPreference
+            android:key="connection_timeout"
+            android:title="@string/connection_timeout_title"
+            android:summary="@string/connection_timeout_summary"
+            android:defaultValue="30"
+            android:max="120"
+            app:min="5"
+            app:showSeekBarValue="true"
+            android:dependency="gateway_enabled" />
+
+        <!-- عدد إعادة المحاولة -->
+        <SeekBarPreference
+            android:key="retry_attempts"
+            android:title="@string/retry_attempts_title"
+            android:summary="@string/retry_attempts_summary"
+            android:defaultValue="3"
+            android:max="10"
+            app:min="1"
+            app:showSeekBarValue="true"
+            android:dependency="gateway_enabled" />
+
+        <!-- تنظيف السجلات -->
+        <Preference
+            android:key="clear_logs"
+            android:title="@string/clear_logs_title"
+            android:summary="@string/clear_logs_summary"
+            android:icon="@drawable/ic_delete_sweep" />
+
+        <!-- إعادة تعيين الإعدادات -->
+        <Preference
+            android:key="reset_settings"
+            android:title="@string/reset_settings_title"
+            android:summary="@string/reset_settings_summary"
+            android:icon="@drawable/ic_restore" />
+
+    </PreferenceCategory>
+
+    <!-- معلومات التطبيق -->
+    <PreferenceCategory android:title="@string/app_info_category">
+
+        <!-- إصدار التطبيق -->
+        <Preference
+            android:key="app_version"
+            android:title="@string/app_version_title"
+            android:summary="@string/app_version_summary"
+            android:icon="@drawable/ic_info"
+            android:selectable="false" />
+
+        <!-- معلومات الجهاز -->
+        <Preference
+            android:key="device_info"
+            android:title="@string/device_info_title"
+            android:summary="@string/device_info_summary"
+            android:icon="@drawable/ic_phone_android"
+            android:selectable="false" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

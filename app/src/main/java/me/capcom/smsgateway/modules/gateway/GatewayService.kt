@@ -48,11 +48,57 @@ class GatewayService(
     //region Start, stop, etc...
     fun start(context: Context) {
         if (!settings.enabled) return
+        
+        // تسجيل بدء الخدمة
+        logsService.insert(
+            LogEntry.Priority.INFO,
+            MODULE_NAME,
+            "بدء تشغيل خدمة Gateway - الوضع: ${settings.serverMode}"
+        )
 
-        PushService.register(context)
-        PullMessagesWorker.start(context)
-        WebhooksUpdateWorker.start(context)
-        SettingsUpdateWorker.start(context)
+        // تشغيل الخدمات حسب الوضع المحدد
+        when (settings.serverMode) {
+            GatewaySettings.ServerMode.LOCAL_ONLY -> {
+                logsService.insert(
+                    LogEntry.Priority.INFO,
+                    MODULE_NAME,
+                    "تشغيل الوضع المحلي فقط - تم تخطي خدمات الخادم السحابي"
+                )
+                // لا نحتاج PushService أو Workers في الوضع المحلي
+            }
+            GatewaySettings.ServerMode.CLOUD_ONLY,
+            GatewaySettings.ServerMode.AUTO -> {
+                try {
+                    PushService.register(context)
+                    PullMessagesWorker.start(context)
+                    WebhooksUpdateWorker.start(context)
+                    SettingsUpdateWorker.start(context)
+                    
+                    logsService.insert(
+                        LogEntry.Priority.INFO,
+                        MODULE_NAME,
+                        "تم تشغيل خدمات الخادم السحابي بنجاح"
+                    )
+                } catch (e: Exception) {
+                    logsService.insert(
+                        LogEntry.Priority.ERROR,
+                        MODULE_NAME,
+                        "فشل في تشغيل خدمات الخادم السحابي: ${e.message}",
+                        mapOf("error" to e.toString())
+                    )
+                    
+                    // في حالة الوضع التلقائي، التبديل إلى المحلي
+                    if (settings.serverMode == GatewaySettings.ServerMode.AUTO) {
+                        settings.serverMode = GatewaySettings.ServerMode.LOCAL_ONLY
+                        logsService.insert(
+                            LogEntry.Priority.WARN,
+                            MODULE_NAME,
+                            "تم التبديل إلى الوضع المحلي بسبب فشل الاتصال بالخادم السحابي"
+                        )
+                    }
+                }
+            }
+        }
 
         eventsReceiver.start()
     }
@@ -69,6 +115,68 @@ class GatewayService(
     }
 
     fun isActiveLiveData(context: Context) = PullMessagesWorker.getStateLiveData(context)
+    
+    /**
+     * اختبار الاتصال بالخادم السحابي
+     */
+    suspend fun testCloudConnection(): Boolean {
+        return try {
+            if (!settings.isCloudEnabled) {
+                logsService.insert(
+                    LogEntry.Priority.INFO,
+                    MODULE_NAME,
+                    "اختبار الاتصال متخطى - الوضع المحلي مفعل"
+                )
+                return false
+            }
+            
+            logsService.insert(
+                LogEntry.Priority.INFO,
+                MODULE_NAME,
+                "بدء اختبار الاتصال بالخادم السحابي: ${settings.serverUrl}"
+            )
+            
+            val response = api.getDevice(settings.registrationInfo?.token)
+            
+            logsService.insert(
+                LogEntry.Priority.INFO,
+                MODULE_NAME,
+                "نجح اختبار الاتصال بالخادم السحابي - IP الخارجي: ${response.externalIp}"
+            )
+            
+            true
+        } catch (e: Exception) {
+            logsService.insert(
+                LogEntry.Priority.ERROR,
+                MODULE_NAME,
+                "فشل اختبار الاتصال بالخادم السحابي: ${e.message}",
+                mapOf(
+                    "server_url" to settings.serverUrl,
+                    "error" to e.toString()
+                )
+            )
+            false
+        }
+    }
+    
+    /**
+     * الحصول على حالة الاتصال الحالية
+     */
+    fun getConnectionStatus(): ConnectionStatus {
+        return when {
+            !settings.enabled -> ConnectionStatus.DISABLED
+            settings.serverMode == GatewaySettings.ServerMode.LOCAL_ONLY -> ConnectionStatus.LOCAL_ONLY
+            settings.registrationInfo != null -> ConnectionStatus.CLOUD_CONNECTED
+            else -> ConnectionStatus.CLOUD_DISCONNECTED
+        }
+    }
+    
+    enum class ConnectionStatus {
+        DISABLED,           // الخدمة معطلة
+        LOCAL_ONLY,         // الوضع المحلي فقط
+        CLOUD_CONNECTED,    // متصل بالخادم السحابي
+        CLOUD_DISCONNECTED  // غير متصل بالخادم السحابي
+    }
     //endregion
 
     //region Account

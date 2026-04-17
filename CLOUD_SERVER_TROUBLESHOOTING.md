@@ -1,263 +1,280 @@
-# دليل حل مشاكل الاتصال بالخادم السحابي
+# دليل استكشاف أخطاء الخادم السحابي - بوابة الرسائل النصية العربية
 
-## 🔧 **الحلول المقترحة**
+## 🔍 **تشخيص المشكلة**
 
-### 1. **تحديث إعدادات أمان الشبكة**
+### الأعراض الشائعة:
+- فشل الاتصال بالخادم السحابي عند بدء التطبيق
+- رسائل خطأ "Connection failed" أو "Server unreachable"
+- عدم تلقي الرسائل من الخادم السحابي
+- فشل تسجيل الجهاز
 
-قم بتعديل ملف `app/src/main/res/xml/network_security_config.xml` لإضافة دعم أفضل للخادم السحابي:
+## 🛠️ **الحلول المطبقة**
 
-```xml
-<?xml version="1.0" encoding="UTF-8" ?>
-<network-security-config>
-    <base-config cleartextTrafficPermitted="false">
-        <trust-anchors>
-            <certificates src="user" />
-            <certificates src="system" />
-        </trust-anchors>
-    </base-config>
-    
-    <!-- إعدادات خاصة للخادم السحابي -->
-    <domain-config cleartextTrafficPermitted="false">
-        <domain includeSubdomains="true">api.sms-gate.app</domain>
-        <trust-anchors>
-            <certificates src="system" />
-            <certificates src="user" />
-        </trust-anchors>
-    </domain-config>
-    
-    <!-- إعدادات للخادم المحلي -->
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="false">127.0.0.1</domain>
-        <domain includeSubdomains="false">localhost</domain>
-        <domain includeSubdomains="true">192.168.0.0/16</domain>
-        <domain includeSubdomains="true">10.0.0.0/8</domain>
-    </domain-config>
-</network-security-config>
-```
-
-### 2. **إضافة معالجة أخطاء محسنة**
-
-إنشاء فئة لمعالجة أخطاء الاتصال:
-
+### 1. **نظام أوضاع الخادم الجديد**
 ```kotlin
-// app/src/main/java/me/capcom/smsgateway/modules/gateway/NetworkErrorHandler.kt
-package me.capcom.smsgateway.modules.gateway
-
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import io.ktor.client.plugins.ClientRequestException
-import io.ktor.client.plugins.ServerResponseException
-import io.ktor.http.HttpStatusCode
-import java.net.ConnectException
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
-import javax.net.ssl.SSLException
-
-class NetworkErrorHandler(private val context: Context) {
-    
-    fun isNetworkAvailable(): Boolean {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val network = connectivityManager.activeNetwork ?: return false
-        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
-        
-        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
-               capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
-    }
-    
-    fun handleNetworkError(error: Throwable): String {
-        return when (error) {
-            is UnknownHostException -> "لا يمكن الوصول إلى الخادم السحابي. تحقق من اتصال الإنترنت."
-            is ConnectException -> "فشل في الاتصال بالخادم السحابي. تحقق من إعدادات الشبكة."
-            is SocketTimeoutException -> "انتهت مهلة الاتصال بالخادم السحابي. حاول مرة أخرى."
-            is SSLException -> "مشكلة في شهادة الأمان للخادم السحابي."
-            is ClientRequestException -> {
-                when (error.response.status) {
-                    HttpStatusCode.Unauthorized -> "خطأ في المصادقة. تحقق من بيانات الدخول."
-                    HttpStatusCode.Forbidden -> "ليس لديك صلاحية للوصول إلى هذا المورد."
-                    HttpStatusCode.NotFound -> "المورد المطلوب غير موجود على الخادم."
-                    else -> "خطأ في الطلب: ${error.response.status}"
-                }
-            }
-            is ServerResponseException -> "خطأ في الخادم السحابي: ${error.response.status}"
-            else -> "خطأ غير معروف في الاتصال: ${error.localizedMessage ?: error.message}"
-        }
-    }
+enum class ServerMode {
+    LOCAL_ONLY,    // الوضع المحلي فقط - لا يحتاج اتصال إنترنت
+    CLOUD_ONLY,    // الخادم السحابي فقط - يتطلب اتصال إنترنت
+    AUTO           // تلقائي - محلي أولاً، ثم سحابي عند الحاجة
 }
 ```
 
-### 3. **تحسين GatewayApi مع معالجة أخطاء أفضل**
+### 2. **معالجة أخطاء محسنة**
+- رسائل خطأ باللغة العربية
+- تشخيص تلقائي لمشاكل الشبكة
+- سجلات مفصلة لتتبع المشاكل
+- إعادة محاولة ذكية
 
+### 3. **اختبار الاتصال التلقائي**
 ```kotlin
-// إضافة إلى GatewayApi.kt
-private val client = HttpClient(OkHttp) {
-    install(UserAgent) {
-        agent = "me.capcom.smsgateway/" + BuildConfig.VERSION_NAME
-    }
-    install(ContentNegotiation) {
-        gson {
-            configure()
-        }
-    }
-    
-    // إعدادات المهلة الزمنية
-    engine {
-        config {
-            connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
-            readTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
-            writeTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
-        }
-    }
-    
-    expectSuccess = false // تغيير لمعالجة الأخطاء يدوياً
-}
-```
-
-### 4. **إضافة فحص الاتصال قبل العمليات**
-
-```kotlin
-// إضافة إلى GatewayService.kt
-private val networkErrorHandler = NetworkErrorHandler(context)
-
-suspend fun testConnection(): Boolean {
+suspend fun testCloudConnection(): Boolean {
     return try {
-        if (!networkErrorHandler.isNetworkAvailable()) {
-            throw Exception("لا يوجد اتصال بالإنترنت")
-        }
-        
-        val response = api.getDevice(null)
+        val response = api.getDevice(settings.registrationInfo?.token)
+        logsService.insert(LogEntry.Priority.INFO, "نجح اختبار الاتصال")
         true
     } catch (e: Exception) {
-        logsService.insert(
-            LogEntry.Priority.ERROR,
-            "NetworkTest",
-            networkErrorHandler.handleNetworkError(e),
-            mapOf("error" to e.stackTraceToString())
-        )
+        logsService.insert(LogEntry.Priority.ERROR, "فشل اختبار الاتصال: ${e.message}")
         false
     }
 }
 ```
 
-### 5. **إعدادات DNS البديلة**
+## 🔧 **خطوات الإصلاح**
 
-إضافة إعدادات DNS في `GatewayApi.kt`:
-
+### الخطوة 1: تفعيل الوضع المحلي
 ```kotlin
-private val client = HttpClient(OkHttp) {
-    // ... إعدادات أخرى
-    
-    engine {
-        config {
-            // استخدام DNS عام لتجنب مشاكل DNS المحلي
-            dns(object : okhttp3.Dns {
-                override fun lookup(hostname: String): List<java.net.InetAddress> {
-                    return try {
-                        okhttp3.Dns.SYSTEM.lookup(hostname)
-                    } catch (e: Exception) {
-                        // استخدام Google DNS كبديل
-                        java.net.InetAddress.getAllByName(hostname).toList()
-                    }
-                }
-            })
-        }
-    }
-}
+// في إعدادات التطبيق
+gatewaySettings.serverMode = GatewaySettings.ServerMode.LOCAL_ONLY
 ```
 
-## 🔍 **خطوات التشخيص**
-
-### 1. **فحص الاتصال بالإنترنت**
-```kotlin
-fun checkInternetConnection(): Boolean {
-    val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    val network = connectivityManager.activeNetwork
-    val capabilities = connectivityManager.getNetworkCapabilities(network)
-    
-    return capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
-}
-```
-
-### 2. **فحص الوصول للخادم السحابي**
+### الخطوة 2: فحص السجلات
 ```bash
-# اختبار من سطر الأوامر
-curl -v https://api.sms-gate.app/mobile/v1/device
+# عرض سجلات التطبيق
+adb logcat | grep "GatewayService\|NetworkError\|Connection"
 ```
 
-### 3. **فحص إعدادات البروكسي**
-تأكد من أن التطبيق لا يستخدم إعدادات بروكسي خاطئة.
-
-## 📱 **إعدادات التطبيق**
-
-### 1. **تحديث عنوان الخادم السحابي**
-في إعدادات التطبيق، تأكد من أن عنوان الخادم السحابي صحيح:
-- العنوان الافتراضي: `https://api.sms-gate.app/mobile/v1`
-
-### 2. **إعادة تسجيل الجهاز**
-إذا استمرت المشكلة، قم بإعادة تسجيل الجهاز:
-1. احذف بيانات التسجيل الحالية
-2. أعد تسجيل الجهاز مع الخادم السحابي
-
-### 3. **فحص الشهادات**
-تأكد من أن شهادات SSL محدثة على الجهاز.
-
-## 🛠️ **حلول إضافية**
-
-### 1. **استخدام HTTP بدلاً من HTTPS (للاختبار فقط)**
-```xml
-<!-- في network_security_config_insecure.xml -->
-<domain-config cleartextTrafficPermitted="true">
-    <domain includeSubdomains="true">api.sms-gate.app</domain>
-</domain-config>
-```
-
-### 2. **إضافة إعادة المحاولة التلقائية**
+### الخطوة 3: اختبار الاتصال
 ```kotlin
-suspend fun <T> retryOperation(
-    maxRetries: Int = 3,
-    delayMs: Long = 1000,
-    operation: suspend () -> T
-): T {
-    repeat(maxRetries - 1) { attempt ->
-        try {
-            return operation()
-        } catch (e: Exception) {
-            delay(delayMs * (attempt + 1))
+// في كود التطبيق
+val isConnected = gatewayService.testConnection()
+if (!isConnected) {
+    // التبديل إلى الوضع المحلي
+    gatewaySettings.serverMode = ServerMode.LOCAL_ONLY
+}
+```
+
+## 📱 **إعدادات المستخدم المقترحة**
+
+### واجهة إعدادات الخادم:
+```xml
+<!-- في ملف الإعدادات -->
+<PreferenceCategory android:title="@string/server_settings">
+    
+    <ListPreference
+        android:key="server_mode"
+        android:title="@string/server_mode_title"
+        android:summary="@string/server_mode_summary"
+        android:entries="@array/server_mode_entries"
+        android:entryValues="@array/server_mode_values"
+        android:defaultValue="LOCAL_ONLY" />
+    
+    <EditTextPreference
+        android:key="cloud_server_url"
+        android:title="@string/cloud_server_url"
+        android:summary="@string/cloud_server_url_summary"
+        android:defaultValue="https://api.sms-gate.app/mobile/v1"
+        android:dependency="server_mode" />
+    
+    <Preference
+        android:key="test_connection"
+        android:title="@string/test_connection"
+        android:summary="@string/test_connection_summary" />
+        
+</PreferenceCategory>
+```
+
+### النصوص العربية:
+```xml
+<!-- في strings-ar.xml -->
+<string name="server_settings">إعدادات الخادم</string>
+<string name="server_mode_title">وضع الخادم</string>
+<string name="server_mode_summary">اختر كيفية الاتصال بالخادم</string>
+<string name="test_connection">اختبار الاتصال</string>
+<string name="test_connection_summary">اختبر الاتصال بالخادم السحابي</string>
+
+<string-array name="server_mode_entries">
+    <item>محلي فقط (موصى به)</item>
+    <item>سحابي فقط</item>
+    <item>تلقائي</item>
+</string-array>
+
+<string-array name="server_mode_values">
+    <item>LOCAL_ONLY</item>
+    <item>CLOUD_ONLY</item>
+    <item>AUTO</item>
+</string-array>
+```
+
+## 🚨 **المشاكل الشائعة والحلول**
+
+### 1. **خطأ "Unknown Host"**
+**السبب**: عدم توفر اتصال إنترنت أو DNS غير صحيح
+**الحل**: 
+```kotlin
+if (!networkErrorHandler.isNetworkAvailable()) {
+    // التبديل إلى الوضع المحلي
+    settings.serverMode = ServerMode.LOCAL_ONLY
+}
+```
+
+### 2. **خطأ "Connection Timeout"**
+**السبب**: بطء الإنترنت أو الخادم غير متجاوب
+**الحل**:
+```kotlin
+// زيادة مهلة الاتصال
+val client = HttpClient {
+    install(HttpTimeout) {
+        requestTimeoutMillis = 30000 // 30 ثانية
+        connectTimeoutMillis = 15000 // 15 ثانية
+    }
+}
+```
+
+### 3. **خطأ "SSL Certificate"**
+**السبب**: مشكلة في شهادة الأمان
+**الحل**:
+```kotlin
+// تجاهل شهادات SSL في التطوير (غير آمن للإنتاج)
+val client = HttpClient {
+    install(HttpsRedirect) {
+        checkHttpsUpgrade = false
+    }
+}
+```
+
+### 4. **خطأ "401 Unauthorized"**
+**السبب**: انتهاء صلاحية الرمز المميز
+**الحل**:
+```kotlin
+try {
+    api.getDevice(token)
+} catch (e: ClientRequestException) {
+    if (e.response.status == HttpStatusCode.Unauthorized) {
+        // إعادة تسجيل الجهاز
+        registerDevice(pushToken, RegistrationMode.Anonymous)
+    }
+}
+```
+
+## 📊 **مراقبة الأداء**
+
+### إحصائيات الاتصال:
+```kotlin
+class ConnectionStats {
+    var successfulConnections = 0
+    var failedConnections = 0
+    var averageResponseTime = 0L
+    var lastConnectionTime = 0L
+    
+    fun recordSuccess(responseTime: Long) {
+        successfulConnections++
+        averageResponseTime = (averageResponseTime + responseTime) / 2
+        lastConnectionTime = System.currentTimeMillis()
+    }
+    
+    fun recordFailure() {
+        failedConnections++
+    }
+    
+    fun getSuccessRate(): Double {
+        val total = successfulConnections + failedConnections
+        return if (total > 0) successfulConnections.toDouble() / total else 0.0
+    }
+}
+```
+
+## 🔄 **خطة التعافي التلقائي**
+
+### 1. **مراقبة مستمرة**
+```kotlin
+class ConnectionMonitor {
+    private val checkInterval = 60000L // دقيقة واحدة
+    
+    fun startMonitoring() {
+        Timer().scheduleAtFixedRate(object : TimerTask() {
+            override fun run() {
+                checkConnection()
+            }
+        }, 0, checkInterval)
+    }
+    
+    private suspend fun checkConnection() {
+        if (settings.serverMode == ServerMode.CLOUD_ONLY) {
+            val isConnected = gatewayService.testConnection()
+            if (!isConnected) {
+                // التبديل إلى الوضع التلقائي
+                settings.serverMode = ServerMode.AUTO
+                logsService.insert(
+                    LogEntry.Priority.WARN,
+                    "ConnectionMonitor",
+                    "تم التبديل إلى الوضع التلقائي بسبب فقدان الاتصال"
+                )
+            }
         }
     }
-    return operation() // المحاولة الأخيرة
 }
 ```
 
-### 3. **تسجيل مفصل للأخطاء**
+### 2. **إعادة المحاولة الذكية**
 ```kotlin
-// إضافة تسجيل مفصل في GatewayService.kt
-private fun logNetworkError(operation: String, error: Throwable) {
-    logsService.insert(
-        LogEntry.Priority.ERROR,
-        "CloudServer",
-        "فشل في $operation: ${networkErrorHandler.handleNetworkError(error)}",
-        mapOf(
-            "operation" to operation,
-            "error_type" to error.javaClass.simpleName,
-            "error_message" to error.message,
-            "stack_trace" to error.stackTraceToString(),
-            "server_url" to settings.serverUrl,
-            "network_available" to networkErrorHandler.isNetworkAvailable()
-        )
-    )
+class SmartRetry {
+    private val maxRetries = 3
+    private val baseDelay = 1000L // ثانية واحدة
+    
+    suspend fun <T> executeWithRetry(operation: suspend () -> T): T {
+        var lastException: Exception? = null
+        
+        repeat(maxRetries) { attempt ->
+            try {
+                return operation()
+            } catch (e: Exception) {
+                lastException = e
+                if (attempt < maxRetries - 1) {
+                    val delay = baseDelay * (attempt + 1) // تأخير متزايد
+                    delay(delay)
+                }
+            }
+        }
+        
+        throw lastException ?: Exception("Unknown error")
+    }
 }
 ```
 
-## 📞 **الدعم الفني**
+## 📋 **قائمة التحقق للمطورين**
 
-إذا استمرت المشكلة بعد تطبيق هذه الحلول:
+### قبل النشر:
+- [ ] اختبار الوضع المحلي فقط
+- [ ] اختبار الاتصال بالخادم السحابي
+- [ ] التحقق من ملف `google-services.json`
+- [ ] اختبار معالجة الأخطاء
+- [ ] التحقق من السجلات
+- [ ] اختبار إعادة الاتصال التلقائي
 
-1. **تحقق من سجلات التطبيق** للحصول على تفاصيل الخطأ
-2. **اختبر الاتصال من متصفح الويب** للتأكد من الوصول للخادم
-3. **تحقق من إعدادات الجدار الناري** على الشبكة
-4. **جرب شبكة مختلفة** (مثل بيانات الهاتف المحمول)
+### للمستخدمين:
+- [ ] تفعيل الوضع المحلي كإعداد افتراضي
+- [ ] إضافة رسائل توضيحية للمستخدم
+- [ ] توفير خيارات إعدادات سهلة
+- [ ] إضافة دليل استخدام مبسط
+
+## 🎯 **التوصيات النهائية**
+
+1. **استخدم الوضع المحلي كافتراضي** لضمان عمل التطبيق دون مشاكل
+2. **أضف واجهة إعدادات بسيطة** للمستخدمين المتقدمين
+3. **راقب الاتصال باستمرار** وقم بالتبديل التلقائي عند الحاجة
+4. **وفر رسائل خطأ واضحة** باللغة العربية
+5. **اختبر جميع السيناريوهات** قبل النشر
 
 ---
 
-**ملاحظة**: تأكد من تحديث التطبيق إلى أحدث إصدار للحصول على أحدث إصلاحات الأخطاء.
+**ملاحظة**: هذا الدليل يوفر حلول شاملة لمشاكل الاتصال بالخادم السحابي. يُنصح بتطبيق الحلول تدريجياً واختبارها قبل النشر النهائي.

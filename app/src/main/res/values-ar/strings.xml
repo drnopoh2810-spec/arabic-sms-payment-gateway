@@ -182,3 +182,119 @@
     <string name="wallet_fawry">فوري</string>
     <string name="wallet_unknown">محفظة غير معروفة</string>
 </resources>
+    <!-- إعدادات الخادم -->
+    <string name="server_settings_category">إعدادات الخادم</string>
+    <string name="gateway_enabled_title">تفعيل بوابة الرسائل</string>
+    <string name="gateway_enabled_summary">تفعيل أو إلغاء تفعيل خدمة بوابة الرسائل النصية</string>
+    
+    <string name="server_mode_title">وضع الخادم</string>
+    <string name="server_mode_summary">اختر كيفية الاتصال بالخادم</string>
+    
+    <string name="cloud_server_url_title">عنوان الخادم السحابي</string>
+    <string name="cloud_server_url_summary">عنوان URL للخادم السحابي</string>
+    
+    <string name="private_token_title">الرمز المميز الخاص</string>
+    <string name="private_token_summary">الرمز المميز للمصادقة مع الخادم</string>
+
+    <!-- خيارات وضع الخادم -->
+    <string-array name="server_mode_entries">
+        <item>محلي فقط (موصى به)</item>
+        <item>سحابي فقط</item>
+        <item>تلقائي</item>
+    </string-array>
+
+    <string-array name="server_mode_values">
+        <item>LOCAL_ONLY</item>
+        <item>CLOUD_ONLY</item>
+        <item>AUTO</item>
+    </string-array>
+
+    <!-- إعدادات الاتصال -->
+    <string name="connection_settings_category">إعدادات الاتصال</string>
+    <string name="test_connection_title">اختبار الاتصال</string>
+    <string name="test_connection_summary">اختبر الاتصال بالخادم السحابي</string>
+    
+    <string name="connection_status_title">حالة الاتصال</string>
+    <string name="connection_status_summary">عرض حالة الاتصال الحالية</string>
+    
+    <string name="connection_stats_title">إحصائيات الاتصال</string>
+    <string name="connection_stats_summary">عرض إحصائيات الأداء والاتصال</string>
+
+    <!-- إعدادات الإشعارات -->
+    <string name="notification_settings_category">إعدادات الإشعارات</string>
+    <string name="notification_channel_title">قناة الإشعارات</string>
+    <string name="notification_channel_summary">اختر طريقة تلقي الإشعارات</string>
+    
+    <string name="connection_notifications_title">إشعارات الاتصال</string>
+    <string name="connection_notifications_summary">إظهار إشعارات حالة الاتصال</string>
+
+    <!-- خيارات قناة الإشعارات -->
+    <string-array name="notification_channel_entries">
+        <item>تلقائي</item>
+        <item>SSE فقط</item>
+    </string-array>
+
+    <string-array name="notification_channel_values">
+        <item>AUTO</item>
+        <item>SSE_ONLY</item>
+    </string-array>
+
+    <!-- إعدادات متقدمة -->
+    <string name="advanced_settings_category">إعدادات متقدمة</string>
+    <string name="connection_timeout_title">مهلة الاتصال</string>
+    <string name="connection_timeout_summary">مهلة الاتصال بالثواني</string>
+    
+    <string name="retry_attempts_title">عدد إعادة المحاولة</string>
+    <string name="retry_attempts_summary">عدد مرات إعادة المحاولة عند فشل الاتصال</string>
+    
+    <string name="clear_logs_title">مسح السجلات</string>
+    <string name="clear_logs_summary">مسح جميع سجلات التطبيق</string>
+    
+    <string name="reset_settings_title">إعادة تعيين الإعدادات</string>
+    <string name="reset_settings_summary">إعادة تعيين جميع الإعدادات للقيم الافتراضية</string>
+
+    <!-- معلومات التطبيق -->
+    <string name="app_info_category">معلومات التطبيق</string>
+    <string name="app_version_title">إصدار التطبيق</string>
+    <string name="app_version_summary">بوابة الرسائل النصية العربية v2.0.0</string>
+    
+    <string name="device_info_title">معلومات الجهاز</string>
+    <string name="device_info_summary">معلومات الجهاز والنظام</string>
+
+    <!-- رسائل حالة الاتصال -->
+    <string name="connection_status_disabled">الخدمة معطلة</string>
+    <string name="connection_status_local_only">الوضع المحلي فقط</string>
+    <string name="connection_status_cloud_connected">متصل بالخادم السحابي</string>
+    <string name="connection_status_cloud_disconnected">غير متصل بالخادم السحابي</string>
+    <string name="connection_status_testing">جاري اختبار الاتصال...</string>
+
+    <!-- رسائل اختبار الاتصال -->
+    <string name="test_connection_success">نجح اختبار الاتصال بالخادم السحابي</string>
+    <string name="test_connection_failed">فشل اختبار الاتصال: %s</string>
+    <string name="test_connection_no_internet">لا يوجد اتصال بالإنترنت</string>
+    <string name="test_connection_local_mode">الوضع المحلي مفعل - لا حاجة لاختبار الاتصال</string>
+
+    <!-- رسائل التأكيد -->
+    <string name="confirm_clear_logs">هل أنت متأكد من مسح جميع السجلات؟</string>
+    <string name="confirm_reset_settings">هل أنت متأكد من إعادة تعيين جميع الإعدادات؟</string>
+    <string name="logs_cleared">تم مسح السجلات بنجاح</string>
+    <string name="settings_reset">تم إعادة تعيين الإعدادات بنجاح</string>
+
+    <!-- رسائل الأخطاء -->
+    <string name="error_invalid_url">عنوان URL غير صحيح</string>
+    <string name="error_empty_token">الرمز المميز مطلوب</string>
+    <string name="error_connection_failed">فشل في الاتصال بالخادم</string>
+    <string name="error_unknown">خطأ غير معروف</string>
+    <!-- ملخصات أوضاع الخادم -->
+    <string name="server_mode_local_only_summary">يعمل التطبيق محلياً فقط - لا يحتاج اتصال إنترنت</string>
+    <string name="server_mode_cloud_only_summary">يتصل بالخادم السحابي فقط - يتطلب اتصال إنترنت</string>
+    <string name="server_mode_auto_summary">يحاول الاتصال بالخادم السحابي، ويتحول للمحلي عند الحاجة</string>
+
+    <!-- ملخصات حالة الاتصال -->
+    <string name="connection_status_disabled_summary">خدمة بوابة الرسائل معطلة</string>
+    <string name="connection_status_local_only_summary">يعمل في الوضع المحلي فقط</string>
+    <string name="connection_status_cloud_connected_summary">متصل بالخادم السحابي بنجاح</string>
+    <string name="connection_status_cloud_disconnected_summary">غير متصل بالخادم السحابي</string>
+    <!-- إعدادات الدفع في القائمة الرئيسية -->
+    <string name="payment_settings_title">إعدادات الدفع الإلكتروني</string>
+    <string name="payment_settings_summary">إدارة المحافظ الإلكترونية والمدفوعات</string>
