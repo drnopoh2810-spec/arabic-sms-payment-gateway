@@ -298,3 +298,4 @@
     <!-- إعدادات الدفع في القائمة الرئيسية -->
     <string name="payment_settings_title">إعدادات الدفع الإلكتروني</string>
     <string name="payment_settings_summary">إدارة المحافظ الإلكترونية والمدفوعات</string>
+</resources>
