@@ -196,19 +196,6 @@
     <string name="private_token_title">الرمز المميز الخاص</string>
     <string name="private_token_summary">الرمز المميز للمصادقة مع الخادم</string>
 
-    <!-- خيارات وضع الخادم -->
-    <string-array name="server_mode_entries">
-        <item>محلي فقط (موصى به)</item>
-        <item>سحابي فقط</item>
-        <item>تلقائي</item>
-    </string-array>
-
-    <string-array name="server_mode_values">
-        <item>LOCAL_ONLY</item>
-        <item>CLOUD_ONLY</item>
-        <item>AUTO</item>
-    </string-array>
-
     <!-- إعدادات الاتصال -->
     <string name="connection_settings_category">إعدادات الاتصال</string>
     <string name="test_connection_title">اختبار الاتصال</string>
@@ -227,17 +214,6 @@
     
     <string name="connection_notifications_title">إشعارات الاتصال</string>
     <string name="connection_notifications_summary">إظهار إشعارات حالة الاتصال</string>
-
-    <!-- خيارات قناة الإشعارات -->
-    <string-array name="notification_channel_entries">
-        <item>تلقائي</item>
-        <item>SSE فقط</item>
-    </string-array>
-
-    <string-array name="notification_channel_values">
-        <item>AUTO</item>
-        <item>SSE_ONLY</item>
-    </string-array>
 
     <!-- إعدادات متقدمة -->
     <string name="advanced_settings_category">إعدادات متقدمة</string>
