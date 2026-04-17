@@ -235,4 +235,53 @@
     <!-- Payment Settings -->
     <string name="payment_settings_title">Electronic Payment Settings</string>
     <string name="payment_settings_summary">Manage electronic wallets and payments</string>
+
+    <!-- Gateway Connection Status Messages -->
+    <string name="connection_status_disabled">Service disabled</string>
+    <string name="connection_status_local_only">Local mode only</string>
+    <string name="connection_status_cloud_connected">Connected to cloud server</string>
+    <string name="connection_status_cloud_disconnected">Disconnected from cloud server</string>
+    <string name="connection_status_testing">Testing connection...</string>
+
+    <!-- Connection Test Messages -->
+    <string name="test_connection_success">Successfully connected to cloud server</string>
+    <string name="test_connection_failed">Connection test failed: %s</string>
+    <string name="test_connection_no_internet">No internet connection</string>
+    <string name="test_connection_local_mode">Local mode enabled - no connection test needed</string>
+
+    <!-- Cloud Server Error Messages -->
+    <string name="cloud_server_test_connection">Test Connection</string>
+    <string name="cloud_server_connection_success">Successfully connected to cloud server</string>
+    <string name="cloud_server_connection_failed">Failed to connect to cloud server</string>
+    <string name="cloud_server_no_internet">No internet connection available</string>
+    <string name="cloud_server_timeout">Connection timeout</string>
+    <string name="cloud_server_auth_error">Authentication failed - check your token</string>
+    <string name="cloud_server_not_found">Server not found - check URL</string>
+    <string name="cloud_server_server_error">Server error occurred</string>
+    <string name="cloud_server_ssl_error">SSL certificate error</string>
+    <string name="cloud_server_permission_denied">Permission denied</string>
+    <string name="cloud_server_unknown_error">Unknown error occurred</string>
+
+    <!-- Confirmation Messages -->
+    <string name="confirm_clear_logs">Are you sure you want to clear all logs?</string>
+    <string name="confirm_reset_settings">Are you sure you want to reset all settings?</string>
+    <string name="logs_cleared">Logs cleared successfully</string>
+    <string name="settings_reset">Settings reset successfully</string>
+
+    <!-- Error Messages -->
+    <string name="error_invalid_url">Invalid URL</string>
+    <string name="error_empty_token">Token is required</string>
+    <string name="error_connection_failed">Failed to connect to server</string>
+    <string name="error_unknown">Unknown error</string>
+
+    <!-- Server Mode Summaries -->
+    <string name="server_mode_local_only_summary">App works locally only - no internet required</string>
+    <string name="server_mode_cloud_only_summary">Connects to cloud server only - internet required</string>
+    <string name="server_mode_auto_summary">Tries cloud server, falls back to local when needed</string>
+
+    <!-- Connection Status Summaries -->
+    <string name="connection_status_disabled_summary">SMS gateway service is disabled</string>
+    <string name="connection_status_local_only_summary">Working in local mode only</string>
+    <string name="connection_status_cloud_connected_summary">Successfully connected to cloud server</string>
+    <string name="connection_status_cloud_disconnected_summary">Not connected to cloud server</string>
 </resources>
