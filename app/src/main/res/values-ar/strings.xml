@@ -298,45 +298,4 @@
     <!-- إعدادات الدفع في القائمة الرئيسية -->
     <string name="payment_settings_title">إعدادات الدفع الإلكتروني</string>
     <string name="payment_settings_summary">إدارة المحافظ الإلكترونية والمدفوعات</string>
-
-    <!-- Gateway Preferences Strings -->
-    <string name="server_settings_category">إعدادات الخادم</string>
-    <string name="gateway_enabled_title">تفعيل خدمة البوابة</string>
-    <string name="gateway_enabled_summary">تشغيل أو إيقاف خدمة بوابة الرسائل</string>
-    <string name="server_mode_title">وضع الخادم</string>
-    <string name="server_mode_summary">اختر كيفية عمل التطبيق</string>
-    <string name="cloud_server_url_title">عنوان الخادم السحابي</string>
-    <string name="cloud_server_url_summary">رابط API للخادم السحابي</string>
-    <string name="private_token_title">الرمز المميز الخاص</string>
-    <string name="private_token_summary">رمز المصادقة للاتصال بالخادم</string>
-    
-    <string name="connection_settings_category">إعدادات الاتصال</string>
-    <string name="test_connection_title">اختبار الاتصال</string>
-    <string name="test_connection_summary">تحقق من الاتصال بالخادم السحابي</string>
-    <string name="connection_status_title">حالة الاتصال</string>
-    <string name="connection_status_summary">عرض حالة الاتصال الحالية</string>
-    <string name="connection_stats_title">إحصائيات الاتصال</string>
-    <string name="connection_stats_summary">عرض معلومات الاتصال التفصيلية</string>
-    
-    <string name="notification_settings_category">إعدادات الإشعارات</string>
-    <string name="notification_channel_title">قناة الإشعارات</string>
-    <string name="notification_channel_summary">اختر نوع الإشعارات</string>
-    <string name="connection_notifications_title">إشعارات الاتصال</string>
-    <string name="connection_notifications_summary">إظهار إشعارات عند تغيير حالة الاتصال</string>
-    
-    <string name="advanced_settings_category">إعدادات متقدمة</string>
-    <string name="connection_timeout_title">مهلة الاتصال</string>
-    <string name="connection_timeout_summary">الوقت الأقصى للانتظار (بالثواني)</string>
-    <string name="retry_attempts_title">عدد إعادة المحاولة</string>
-    <string name="retry_attempts_summary">عدد المحاولات عند فشل الاتصال</string>
-    <string name="clear_logs_title">مسح السجلات</string>
-    <string name="clear_logs_summary">حذف جميع سجلات الاتصال</string>
-    <string name="reset_settings_title">إعادة تعيين الإعدادات</string>
-    <string name="reset_settings_summary">استعادة الإعدادات الافتراضية</string>
-    
-    <string name="app_info_category">معلومات التطبيق</string>
-    <string name="app_version_title">إصدار التطبيق</string>
-    <string name="app_version_summary">معلومات الإصدار الحالي</string>
-    <string name="device_info_title">معلومات الجهاز</string>
-    <string name="device_info_summary">تفاصيل الجهاز والنظام</string>
 </resources>
