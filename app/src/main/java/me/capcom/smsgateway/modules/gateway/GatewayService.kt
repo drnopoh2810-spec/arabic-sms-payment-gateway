@@ -267,7 +267,7 @@ class GatewayService(
                 mapOf(
                     "error_type" to th.javaClass.simpleName,
                     "error_message" to th.message,
-                    "server_url" to settings.serverUrl,
+                    "server_url" to this.settings.serverUrl,
                     "network_available" to networkErrorHandler.isNetworkAvailable(),
                     "registration_mode" to registerMode.javaClass.simpleName
                 )
