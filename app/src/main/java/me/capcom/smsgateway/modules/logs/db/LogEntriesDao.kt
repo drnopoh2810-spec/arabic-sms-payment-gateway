@@ -18,4 +18,7 @@ interface LogEntriesDao {
 
     @Query("DELETE FROM logs_entries WHERE createdAt < :until")
     suspend fun truncate(until: Long)
+
+    @Query("DELETE FROM logs_entries")
+    suspend fun deleteAll()
 }

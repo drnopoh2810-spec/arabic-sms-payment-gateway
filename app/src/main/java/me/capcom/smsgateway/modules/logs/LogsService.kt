@@ -57,4 +57,8 @@ class LogsService(
 
         dao.truncate(until)
     }
+
+    suspend fun clearAll() {
+        dao.deleteAll()
+    }
 }
