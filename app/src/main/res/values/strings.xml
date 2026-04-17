@@ -231,4 +231,8 @@
     <string name="app_version_summary">Current version information</string>
     <string name="device_info_title">Device Information</string>
     <string name="device_info_summary">Device and system details</string>
+
+    <!-- Payment Settings -->
+    <string name="payment_settings_title">Electronic Payment Settings</string>
+    <string name="payment_settings_summary">Manage electronic wallets and payments</string>
 </resources>
