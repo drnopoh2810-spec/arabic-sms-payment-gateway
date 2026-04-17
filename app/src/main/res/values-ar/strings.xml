@@ -181,7 +181,7 @@
     <string name="wallet_etisalat_cash">اتصالات كاش</string>
     <string name="wallet_fawry">فوري</string>
     <string name="wallet_unknown">محفظة غير معروفة</string>
-</resources>
+    
     <!-- إعدادات الخادم -->
     <string name="server_settings_category">إعدادات الخادم</string>
     <string name="gateway_enabled_title">تفعيل بوابة الرسائل</string>
