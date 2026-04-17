@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Server Mode Options -->
+    <string-array name="server_mode_entries">
+        <item>محلي فقط</item>
+        <item>سحابي فقط</item>
+        <item>تلقائي</item>
+    </string-array>
+
+    <string-array name="server_mode_values">
+        <item>LOCAL_ONLY</item>
+        <item>CLOUD_ONLY</item>
+        <item>AUTO</item>
+    </string-array>
+
+    <!-- Notification Channel Options -->
+    <string-array name="notification_channel_entries">
+        <item>تلقائي</item>
+        <item>صامت</item>
+        <item>عادي</item>
+        <item>مهم</item>
+    </string-array>
+
+    <string-array name="notification_channel_values">
+        <item>AUTO</item>
+        <item>SILENT</item>
+        <item>NORMAL</item>
+        <item>IMPORTANT</item>
+    </string-array>
+</resources>

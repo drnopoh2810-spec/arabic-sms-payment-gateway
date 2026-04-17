@@ -37,4 +37,32 @@
         <item>AUTO</item>
         <item>SSE_ONLY</item>
     </string-array>
+
+    <!-- Server Mode Options -->
+    <string-array name="server_mode_entries">
+        <item>Local Only</item>
+        <item>Cloud Only</item>
+        <item>Auto</item>
+    </string-array>
+
+    <string-array name="server_mode_values">
+        <item>LOCAL_ONLY</item>
+        <item>CLOUD_ONLY</item>
+        <item>AUTO</item>
+    </string-array>
+
+    <!-- Notification Channel Options -->
+    <string-array name="notification_channel_entries">
+        <item>Auto</item>
+        <item>Silent</item>
+        <item>Normal</item>
+        <item>Important</item>
+    </string-array>
+
+    <string-array name="notification_channel_values">
+        <item>AUTO</item>
+        <item>SILENT</item>
+        <item>NORMAL</item>
+        <item>IMPORTANT</item>
+    </string-array>
 </resources>

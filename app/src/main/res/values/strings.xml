@@ -190,4 +190,45 @@
     <string name="wallet_etisalat_cash">Etisalat Cash</string>
     <string name="wallet_fawry">Fawry</string>
     <string name="wallet_unknown">Unknown Wallet</string>
+
+    <!-- Gateway Preferences Strings -->
+    <string name="server_settings_category">Server Settings</string>
+    <string name="gateway_enabled_title">Enable Gateway Service</string>
+    <string name="gateway_enabled_summary">Turn on or off the SMS gateway service</string>
+    <string name="server_mode_title">Server Mode</string>
+    <string name="server_mode_summary">Choose how the app operates</string>
+    <string name="cloud_server_url_title">Cloud Server URL</string>
+    <string name="cloud_server_url_summary">API endpoint for cloud server</string>
+    <string name="private_token_title">Private Token</string>
+    <string name="private_token_summary">Authentication token for server connection</string>
+    
+    <string name="connection_settings_category">Connection Settings</string>
+    <string name="test_connection_title">Test Connection</string>
+    <string name="test_connection_summary">Verify connection to cloud server</string>
+    <string name="connection_status_title">Connection Status</string>
+    <string name="connection_status_summary">View current connection state</string>
+    <string name="connection_stats_title">Connection Statistics</string>
+    <string name="connection_stats_summary">View detailed connection information</string>
+    
+    <string name="notification_settings_category">Notification Settings</string>
+    <string name="notification_channel_title">Notification Channel</string>
+    <string name="notification_channel_summary">Choose notification type</string>
+    <string name="connection_notifications_title">Connection Notifications</string>
+    <string name="connection_notifications_summary">Show notifications on connection state changes</string>
+    
+    <string name="advanced_settings_category">Advanced Settings</string>
+    <string name="connection_timeout_title">Connection Timeout</string>
+    <string name="connection_timeout_summary">Maximum wait time (seconds)</string>
+    <string name="retry_attempts_title">Retry Attempts</string>
+    <string name="retry_attempts_summary">Number of retries on connection failure</string>
+    <string name="clear_logs_title">Clear Logs</string>
+    <string name="clear_logs_summary">Delete all connection logs</string>
+    <string name="reset_settings_title">Reset Settings</string>
+    <string name="reset_settings_summary">Restore default settings</string>
+    
+    <string name="app_info_category">App Information</string>
+    <string name="app_version_title">App Version</string>
+    <string name="app_version_summary">Current version information</string>
+    <string name="device_info_title">Device Information</string>
+    <string name="device_info_summary">Device and system details</string>
 </resources>
